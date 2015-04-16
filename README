@@ -9,8 +9,9 @@ Due Friday, Apr 17, 2015
 
 Using Skiena's strong.c, we're computing the strongly connected commponents
 of the graph G.  From there, we can create a graph G' where each vertex is a
-strongly connected component from G.  Then we can attack this as a source/sink
-problem.
+strongly connected component from G.  If there is exactly one vertex, v, in G'
+with in-degree 0, this is the mother vertex.  All vertices in the component which 
+v represents are bases.
 
 strong.c contains our main method.  All other .c and .h files are Skiena's
 files upon which strong.c is dependent.  The data folder contains the test
