@@ -69,8 +69,8 @@ pop_component(graph *g, int v)
 
 	components_found = components_found + 1;
 	printf("%d is in component %d \n",v,components_found);
-	g->edges[1]->scc = components_found;
-	printf("g->edges[%d]->scc = %d ", v, components_found);
+	//g->edges[1]->scc = components_found;
+	//printf("g->edges[%d]->scc = %d ", v, components_found);
 	scc[ v ] = components_found;
 	while ((t = pop(&active)) != v) {
 		scc[ t ] = components_found;
@@ -124,6 +124,54 @@ strong_components(graph *g)
 		}
 }
 
+int debug = 1;
+source_sink_work(graph *g)
+{
+	int in[components_found+1];
+	int out[components_found+1];
+	int i;				/* counter */
+	for(i=1;i<components_found+1;i++){
+		in[i] = 0;
+		out[i] = 0;
+		if(debug){
+			printf("%d in@ %d \n",in[i],i);
+			printf("%d out@ %d \n",out[i],i);
+		}
+	}
+	edgenode *p;			/* temporary pointer */
+
+	for (i=1; i<=g->nvertices; i++) {
+		printf("%d: ",i);
+		p = g->edges[i];
+		while (p != NULL) {
+		    if(scc[p->y] != scc[i])
+				in[p->y] = in[p->y] + 1;
+				printf("in for node %d is %d \n",i,in[p->y]+1);
+				out[i] = out[i] + 1;
+			p = p->next;
+		}
+		printf("\n");
+	}
+	int base;
+	int sponge;
+	for(i=1;i<components_found+1;i++){
+			if(in[i] == 0&&base == 0) base = i;
+			else if(in[i] == 0&&base != 0) base = -1;
+			if(out[i] == 0&&sponge ==0) sponge = i;
+			else if(out[i] == 0&&sponge != 0) sponge = -1;
+	
+	}
+	if(base > 0) printf("base is every node in %d\n",base);
+	else{
+	  printf("there are no candidates for bases\n");
+	}
+	if(sponge > 0) printf("sponge is every node in %d\n",sponge);
+	else{
+	  printf("there are no candidates for sponges\n");
+	}
+}
+
+
 main()
 {
 	graph g;
@@ -134,18 +182,7 @@ main()
 
 	strong_components(&g);
 
-
-	edgenode *p;			/* temporary pointer */
-
-	for (i=1; i<=g.nvertices; i++) {
-		printf("%d: ",i);
-		p = g.edges[i];
-		while (p != NULL) {
-			printf(" %d",p->scc);
-			p = p->next;
-		}
-		printf("\n");
-	}
+    source_sink_work(&g);	
 
 
 
