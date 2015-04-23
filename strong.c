@@ -7,7 +7,7 @@
 */
 
 /*
-Copyright 2003 by Steven S. Skiena; all rights reserved. 
+Copyright 2003 by Steven S. Skiena; all rights reserved.
 
 Permission is granted for use in non-commerical applications
 provided this copyright notice remains intact and unchanged.
@@ -50,26 +50,27 @@ process_vertex_early(int v)
 	push(&active,v);
 }
 
-process_vertex_late(int v)
+process_vertex_late(graph *g, int v)
 {
         /*printf("exit vertex %d at time %d\n",v, exit_time[v]);*/
 
 	if (low[v] == v) { 		/* edge (parent[v],v) cuts off scc */
 /*printf("strong commonent started backtracking from %d\n",v);*/
-		pop_component(v);
+		pop_component(&g, v);
 	}
 
 	if (entry_time[low[v]] < entry_time[low[parent[v]]])
 		low[parent[v]] = low[v];
 }
 
-pop_component(int v)
+pop_component(graph *g, int v)
 {
         int t;                  /* vertex placeholder */
 
 	components_found = components_found + 1;
 	printf("%d is in component %d \n",v,components_found);
-
+	g->edges[1]->scc = components_found;
+	printf("g->edges[%d]->scc = %d ", v, components_found);
 	scc[ v ] = components_found;
 	while ((t = pop(&active)) != v) {
 		scc[ t ] = components_found;
@@ -132,5 +133,20 @@ main()
 	print_graph(&g);
 
 	strong_components(&g);
-}
 
+
+	edgenode *p;			/* temporary pointer */
+
+	for (i=1; i<=g.nvertices; i++) {
+		printf("%d: ",i);
+		p = g.edges[i];
+		while (p != NULL) {
+			printf(" %d",p->scc);
+			p = p->next;
+		}
+		printf("\n");
+	}
+
+
+
+}

@@ -5,7 +5,7 @@
 */
 
 /*
-Copyright 2003 by Steven S. Skiena; all rights reserved. 
+Copyright 2003 by Steven S. Skiena; all rights reserved.
 
 Permission is granted for use in non-commerical applications
 provided this copyright notice remains intact and unchanged.
@@ -38,6 +38,7 @@ typedef struct edgenode {
 	int y;				/* adjancency info */
 	int weight;			/* edge weight, if any */
 	struct edgenode *next;		/* next edge in list */
+	int scc;
 } edgenode;
 
 typedef struct {
@@ -47,5 +48,3 @@ typedef struct {
 	int nedges;			/* number of edges in the graph */
 	int directed;			/* is the graph directed? */
 } graph;
-
-
