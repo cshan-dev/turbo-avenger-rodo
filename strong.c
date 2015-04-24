@@ -25,7 +25,6 @@ http://www.amazon.com/exec/obidos/ASIN/0387001638/thealgorithmrepo/
 
 */
 
-
 #include "bool.h"
 #include "graph.h"
 #include "stack.h"
@@ -49,7 +48,6 @@ process_vertex_early(int v)
 
 	push(&active,v);
 }
-
 process_vertex_late(graph *g, int v)
 {
         /*printf("exit vertex %d at time %d\n",v, exit_time[v]);*/
@@ -134,38 +132,58 @@ source_sink_work(graph *g)
 		in[i] = 0;
 		out[i] = 0;
 		if(debug){
-			printf("%d in@ %d \n",in[i],i);
-			printf("%d out@ %d \n",out[i],i);
 		}
 	}
 	edgenode *p;			/* temporary pointer */
 
 	for (i=1; i<=g->nvertices; i++) {
-		printf("%d: ",i);
 		p = g->edges[i];
 		while (p != NULL) {
-		    if(scc[p->y] != scc[i])
-				in[p->y] = in[p->y] + 1;
-				printf("in for node %d is %d \n",i,in[p->y]+1);
-				out[i] = out[i] + 1;
+			int isIn = 0;
+			if(scc[p->y] == scc[i]) isIn = 1;
+            //printf("edge from %d to %d is %d in the same component\n",i,p->y,isIn);
+		    if(scc[p->y] != scc[i]){
+				//printf("edge %d -> %d is not in same component\n",i,p->y);
+				in[scc[p->y]] = in[scc[p->y]] + 1;
+				//printf("in at scc[%d] is %d\n",p->y,in[scc[p->y]]);
+				out[scc[i]] = out[scc[i]] + 1;
+				//printf("out at scc[%d] is %d\n",i,out[scc[i]]);
+			}
 			p = p->next;
 		}
-		printf("\n");
 	}
-	int base;
-	int sponge;
+		for(i = 1;i<components_found+1;i++){
+				//printf("%d\n",components_found);
+				//printf("in degree for component %d is %d\n",i,in[i]);
+				//printf("out degree for component %d is %d\n",i,out[i]);
+		
+		}
+	int base = 0;
+	int sponge = 0;
 	for(i=1;i<components_found+1;i++){
-			if(in[i] == 0&&base == 0) base = i;
-			else if(in[i] == 0&&base != 0) base = -1;
-			if(out[i] == 0&&sponge ==0) sponge = i;
-			else if(out[i] == 0&&sponge != 0) sponge = -1;
+			if(in[i] == 0 && base == 0) base = i;
+			else if(in[i] == 0 && base != 0) base = -1;
+			if(out[i] == 0 && sponge == 0) sponge = i;
+			else if(out[i] == 0 && sponge != 0) sponge = -1;
 	
 	}
-	if(base > 0) printf("base is every node in %d\n",base);
+	if(base > 0){
+		int i;
+		for(i = 1;i < MAXV+1;i++){
+			if(scc[i] == base) printf("%d,",i);
+		}	
+			printf(" are in the base component\n");
+	}
 	else{
 	  printf("there are no candidates for bases\n");
 	}
-	if(sponge > 0) printf("sponge is every node in %d\n",sponge);
+	if(sponge > 0) {
+		int i;
+		for(i = 1;i < MAXV+1;i++){
+			if(scc[i] == sponge) printf("%d,",i);
+		}	
+			printf(" are in the sponge component\n");
+	}
 	else{
 	  printf("there are no candidates for sponges\n");
 	}
