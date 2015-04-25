@@ -44,16 +44,13 @@ int components_found;		/* number of strong components identified */
 
 process_vertex_early(int v)
 {
-	/*printf("entered vertex %d at time %d\n",v, entry_time[v]);*/
 
 	push(&active,v);
 }
 process_vertex_late(graph *g, int v)
 {
-        /*printf("exit vertex %d at time %d\n",v, exit_time[v]);*/
 
 	if (low[v] == v) { 		/* edge (parent[v],v) cuts off scc */
-/*printf("strong commonent started backtracking from %d\n",v);*/
 		pop_component(&g, v);
 	}
 
@@ -67,8 +64,6 @@ pop_component(graph *g, int v)
 
 	components_found = components_found + 1;
 	printf("%d is in component %d \n",v,components_found);
-	//g->edges[1]->scc = components_found;
-	//printf("g->edges[%d]->scc = %d ", v, components_found);
 	scc[ v ] = components_found;
 	while ((t = pop(&active)) != v) {
 		scc[ t ] = components_found;
@@ -81,19 +76,16 @@ process_edge(int x, int y)
 	int class;		/* edge class */
 
 	class = edge_classification(x,y);
-/*printf("(%d,%d) class %d\n", x,y,class);*/
 
 	if (class == BACK) {
 		if (entry_time[y] < entry_time[ low[x] ] )
 			low[x] = y;
-/*printf("process BACK (%d,%d) low[%d]=%d  low[%d]=%d\n",x,y,x,low[x],y,low[y]);*/
 	}
 
 	if (class == CROSS) {
 		if (scc[y] == -1)	/* component not yet assigned */
 			if (entry_time[y] < entry_time[ low[x] ] )
                         	low[x] = y;
-/*printf("process CROSS (%d,%d) low[%d]=%d  low[%d]=%d\n",x,y,x,low[x],y,low[y]);*/
 	}
 }
 
@@ -121,7 +113,6 @@ strong_components(graph *g)
 			/*pop_component(i);*/
 		}
 }
-
 int debug = 1;
 source_sink_work(graph *g)
 {
@@ -141,23 +132,13 @@ source_sink_work(graph *g)
 		while (p != NULL) {
 			int isIn = 0;
 			if(scc[p->y] == scc[i]) isIn = 1;
-            //printf("edge from %d to %d is %d in the same component\n",i,p->y,isIn);
 		    if(scc[p->y] != scc[i]){
-				//printf("edge %d -> %d is not in same component\n",i,p->y);
 				in[scc[p->y]] = in[scc[p->y]] + 1;
-				//printf("in at scc[%d] is %d\n",p->y,in[scc[p->y]]);
 				out[scc[i]] = out[scc[i]] + 1;
-				//printf("out at scc[%d] is %d\n",i,out[scc[i]]);
 			}
 			p = p->next;
 		}
 	}
-		for(i = 1;i<components_found+1;i++){
-				//printf("%d\n",components_found);
-				//printf("in degree for component %d is %d\n",i,in[i]);
-				//printf("out degree for component %d is %d\n",i,out[i]);
-		
-		}
 	int base = 0;
 	int sponge = 0;
 	for(i=1;i<components_found+1;i++){
