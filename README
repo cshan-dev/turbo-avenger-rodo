@@ -4,8 +4,8 @@ Josh Simmons
 Robot Dolphin Rodeo
 CISC320
 David Saunders
-Phase 1
-Due Friday, Apr 17, 2015
+Phase 2
+Due Friday, Apr 24, 2015
 
 Using Skiena's strong.c, we're computing the strongly connected commponents
 of the graph G.  From there, we can create a graph G' where each vertex is a
